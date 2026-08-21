@@ -82,10 +82,14 @@ export const useResumeStore = create<ResumeState>()(
           const pageCount = pageCountHeader ? parseInt(pageCountHeader, 10) : null;
 
           const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
+          // #view=FitH pins a consistent fit-width zoom on every reload —
+          // without it, Chrome's built-in PDF viewer resets to whatever its
+          // own default is each time the blob URL changes (i.e. every
+          // recompile), which reads as the preview randomly "resizing".
+          const url = `${URL.createObjectURL(blob)}#view=FitH`;
           const prevUrl = get().pdfUrl;
           set({ pdfUrl: url, pageCount, isCompiling: false, compileError: null });
-          if (prevUrl) URL.revokeObjectURL(prevUrl);
+          if (prevUrl) URL.revokeObjectURL(prevUrl.split("#")[0]);
         } catch (e) {
           if (e instanceof DOMException && e.name === "AbortError") return;
           set({
