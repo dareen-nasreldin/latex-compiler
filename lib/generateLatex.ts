@@ -1,27 +1,23 @@
 import { CONTACT_BLOCK, LATEX_PREAMBLE } from "./latexTemplate";
 import {
-  education,
+  educationByTarget,
   experience,
   headers,
   projects,
-  skills,
+  skillsByTarget,
   type ResumeTarget,
 } from "@/data/resumeBlocks";
 
 export interface ResumeConfig {
   target: ResumeTarget;
-  skillIds: string[];
   experienceIds: string[];
   projectIds: string[];
-  educationIds: string[];
 }
 
 export const defaultConfig: ResumeConfig = {
   target: "general",
-  skillIds: skills.map((b) => b.id),
   experienceIds: experience.map((b) => b.id),
   projectIds: projects.map((b) => b.id),
-  educationIds: education.map((b) => b.id),
 };
 
 function section(title: string, itemsLatex: string[]): string {
@@ -30,29 +26,18 @@ function section(title: string, itemsLatex: string[]): string {
 }
 
 export function generateLatex(config: ResumeConfig): string {
-  const selectedSkills = skills.filter((b) => config.skillIds.includes(b.id));
   const selectedExperience = experience.filter((b) =>
     config.experienceIds.includes(b.id),
   );
   const selectedProjects = projects.filter((b) =>
     config.projectIds.includes(b.id),
   );
-  const selectedEducation = education.filter((b) =>
-    config.educationIds.includes(b.id),
-  );
 
   const body: string[] = [CONTACT_BLOCK];
 
   body.push(`\\begin{center}\n    \\small ${headers[config.target]}\n\\end{center}\n`);
 
-  if (selectedEducation.length > 0) {
-    body.push(
-      section(
-        "Education",
-        selectedEducation.map((b) => b.latex),
-      ),
-    );
-  }
+  body.push(`\\section{Education}\n${educationByTarget[config.target]}\n`);
 
   if (selectedExperience.length > 0) {
     body.push(
@@ -72,13 +57,7 @@ export function generateLatex(config: ResumeConfig): string {
     );
   }
 
-  if (selectedSkills.length > 0) {
-    body.push(
-      `\\section{Skills}\n    \\begin{itemize}[leftmargin=0.15in, label={}]\n      \\small{\\item{\n${selectedSkills
-        .map((b) => b.latex)
-        .join(" \\\\\n")}\n      }}\n    \\end{itemize}\n`,
-    );
-  }
+  body.push(`\\section{Skills}\n${skillsByTarget[config.target]}\n`);
 
   return `${LATEX_PREAMBLE}\n\\begin{document}\n\n${body.join("\n")}\n\\end{document}\n`;
 }

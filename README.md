@@ -45,13 +45,19 @@ Open http://localhost:3000. The sidebar toggles which blocks from
 generated `.tex` directly (edits are debounced ~1s before auto-compiling).
 Compile errors show the Tectonic log instead of a blank preview.
 
-### 3. Add your real resume content
+### 3. Resume content
 
-`data/resumeBlocks.ts` ships with placeholder LaTeX blocks (marked `TODO`).
-Replace the `headers`, `skills`, `projects`, `experience`, and `education`
-entries with your actual content — the shared macros they rely on
-(`\resumeItem`, `\resumeSubheading`, `\resumeProjectHeading`, etc.) live in
-`lib/latexTemplate.ts`.
+`data/resumeBlocks.ts` holds the real content: five targets (General SWE,
+NVIDIA/HPC, Firmware & Embedded, AI Infrastructure, Systems & API), each with
+its own headline, skills ordering, and education/coursework framing —
+selecting a target in the sidebar swaps all three automatically. Experience
+and Projects are independently toggleable blocks, checked on by default.
+
+Two things still need filling in, marked `TODO` in `lib/latexTemplate.ts`'s
+`CONTACT_BLOCK`: a phone number and a LinkedIn URL.
+
+The shared macros every block relies on (`\resumeItem`, `\resumeSubheading`,
+`\resumeProjectHeading`, etc.) live in `lib/latexTemplate.ts`.
 
 ## Deployment
 

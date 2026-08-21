@@ -9,10 +9,7 @@ interface ResumeState {
   isCompiling: boolean;
   compileError: string | null;
   setTarget: (target: ResumeTarget) => void;
-  toggleBlock: (
-    category: "skillIds" | "experienceIds" | "projectIds" | "educationIds",
-    id: string,
-  ) => void;
+  toggleBlock: (category: "experienceIds" | "projectIds", id: string) => void;
   setTexSource: (tex: string) => void;
   compile: () => Promise<void>;
 }

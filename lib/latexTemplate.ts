@@ -64,9 +64,10 @@ export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{articl
 `;
 
 export const CONTACT_BLOCK = String.raw`\begin{center}
-    \textbf{\Huge \scshape Your Name} \\ \vspace{1pt}
-    \small 555-555-5555 $|$ \href{mailto:you@example.com}{you@example.com} $|$
+    \textbf{\Huge \scshape Dareen M. Nasreldin} \\ \vspace{1pt}
+    % TODO: add your phone number and LinkedIn URL below.
+    \small 555-555-5555 $|$ \href{mailto:dareennasreldin@gmail.com}{dareennasreldin@gmail.com} $|$
     \href{https://linkedin.com/in/yourname}{linkedin.com/in/yourname} $|$
-    \href{https://github.com/yourname}{github.com/yourname}
+    \href{https://dareen-nasreldin.github.io}{dareen-nasreldin.github.io}
 \end{center}
 `;

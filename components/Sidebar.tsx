@@ -1,13 +1,7 @@
 "use client";
 
 import { useResumeStore } from "@/store/useResumeStore";
-import {
-  education,
-  experience,
-  projects,
-  skills,
-  targets,
-} from "@/data/resumeBlocks";
+import { experience, projects, targets } from "@/data/resumeBlocks";
 
 function BlockGroup({
   title,
@@ -18,7 +12,7 @@ function BlockGroup({
   title: string;
   blocks: { id: string; label: string }[];
   selectedIds: string[];
-  category: "skillIds" | "experienceIds" | "projectIds" | "educationIds";
+  category: "experienceIds" | "projectIds";
 }) {
   const toggleBlock = useResumeStore((s) => s.toggleBlock);
 
@@ -78,14 +72,12 @@ export default function Sidebar() {
             </label>
           ))}
         </div>
+        <p className="mt-2 text-xs text-neutral-500">
+          Education and Skills sections follow the selected target
+          automatically.
+        </p>
       </div>
 
-      <BlockGroup
-        title="Education"
-        blocks={education}
-        selectedIds={config.educationIds}
-        category="educationIds"
-      />
       <BlockGroup
         title="Experience"
         blocks={experience}
@@ -97,12 +89,6 @@ export default function Sidebar() {
         blocks={projects}
         selectedIds={config.projectIds}
         category="projectIds"
-      />
-      <BlockGroup
-        title="Skills"
-        blocks={skills}
-        selectedIds={config.skillIds}
-        category="skillIds"
       />
     </div>
   );
