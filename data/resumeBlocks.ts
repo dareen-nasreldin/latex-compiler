@@ -26,28 +26,28 @@ export const headers: Record<ResumeTarget, string> = {
 // rather than independently toggleable blocks, so they're keyed by target.
 const SKILLS_HARDWARE = String.raw`\begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: C, C++, Assembly, Verilog, Bash, Python, Java, JavaScript, Groovy, SQL, HTML/CSS.} \\
-     \textbf{Tools \& Libraries}{: ModelSim, Quartus, Unix/Linux, PyTorch, Pandas, Grafana k6, SonarQube, Git/Bitbucket, Jira, Gradle/Grails.} \\
-     \textbf{Software Engineering}{: Object-Oriented Design (OOD), Data Structures, Algorithms, CI/CD, Test Automation.} \\
-     \textbf{Core Concepts}{: Hardware Integration, Parallel Systems, Large Language Models (LLMs), REST APIs.}
+     \textbf{Languages}{: C, C++, Verilog, Assembly, Python, Bash, SQL.} \\
+     \textbf{Tools \& Libraries}{: ModelSim, Quartus, Unix/Linux, Git/Bitbucket, PyTorch.} \\
+     \textbf{Software Engineering}{: Object-Oriented Design (OOD), Data Structures, Algorithms, CI/CD.} \\
+     \textbf{Core Concepts}{: Hardware Integration, Parallel Systems, Large Language Models (LLMs).}
     }}
 \end{itemize}`;
 
 const SKILLS_AI_ML = String.raw`\begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: Python, C++, C, Bash, Java, SQL, JavaScript, Groovy, Assembly, Verilog, HTML/CSS.} \\
-     \textbf{Tools \& Libraries}{: PyTorch, Pandas, Unix/Linux, Git/Bitbucket, Grafana k6, SonarQube, ModelSim, Quartus, Jira, Gradle/Grails.} \\
+     \textbf{Languages}{: Python, C++, Java, JavaScript, Bash, SQL.} \\
+     \textbf{Tools \& Libraries}{: PyTorch, Pandas, Git/Bitbucket, Unix/Linux, Jira.} \\
      \textbf{Software Engineering}{: Object-Oriented Design (OOD), Data Structures, Algorithms, CI/CD, Test Automation.} \\
-     \textbf{Core Concepts}{: Large Language Models (LLMs), Parallel Systems, REST APIs, Hardware Integration.}
+     \textbf{Core Concepts}{: Large Language Models (LLMs), Parallel Systems, REST APIs.}
     }}
 \end{itemize}`;
 
 const SKILLS_BACKEND = String.raw`\begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: Java, C++, Python, Groovy, JavaScript, Bash, SQL, HTML/CSS, C, Assembly, Verilog.} \\
-     \textbf{Tools \& Libraries}{: Git/Bitbucket, Unix/Linux, Jira, SonarQube, Grafana k6, Gradle/Grails, PyTorch, Pandas, ModelSim, Quartus.} \\
+     \textbf{Languages}{: Java, C++, Python, Groovy, JavaScript, SQL, HTML/CSS.} \\
+     \textbf{Tools \& Libraries}{: Git/Bitbucket, Unix/Linux, Jira, SonarQube, Grafana k6, Gradle/Grails.} \\
      \textbf{Software Engineering}{: CI/CD, Test Automation, Object-Oriented Design (OOD), Data Structures, Algorithms.} \\
-     \textbf{Core Concepts}{: Parallel Systems, Large Language Models (LLMs), Hardware Integration, REST APIs.}
+     \textbf{Core Concepts}{: Distributed Systems, REST APIs, Parallel Systems.}
     }}
 \end{itemize}`;
 
