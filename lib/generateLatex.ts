@@ -15,10 +15,22 @@ export interface ResumeConfig {
   onePage: boolean;
 }
 
+// Surgical Biomodel and Bahen Courtyard are non-software ESP design
+// projects, least relevant to the default General SWE target; VGA Music
+// Sequencer overlaps with the FPGA project (both embedded/hardware) and is
+// the one that has to go to actually fit one page in compact mode.
+const DEFAULT_EXCLUDED_PROJECTS = [
+  "surgical-biomodel",
+  "bahen-courtyard",
+  "vga-music",
+];
+
 export const defaultConfig: ResumeConfig = {
   target: "general",
   experienceIds: experience.map((b) => b.id),
-  projectIds: projects.map((b) => b.id),
+  projectIds: projects
+    .map((b) => b.id)
+    .filter((id) => !DEFAULT_EXCLUDED_PROJECTS.includes(id)),
   onePage: true,
 };
 
