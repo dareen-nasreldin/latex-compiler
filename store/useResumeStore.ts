@@ -6,9 +6,11 @@ interface ResumeState {
   config: ResumeConfig;
   texSource: string;
   pdfUrl: string | null;
+  pageCount: number | null;
   isCompiling: boolean;
   compileError: string | null;
   setTarget: (target: ResumeTarget) => void;
+  setOnePage: (onePage: boolean) => void;
   toggleBlock: (category: "experienceIds" | "projectIds", id: string) => void;
   setTexSource: (tex: string) => void;
   compile: () => Promise<void>;
@@ -22,11 +24,17 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
   config: defaultConfig,
   texSource: generateLatex(defaultConfig),
   pdfUrl: null,
+  pageCount: null,
   isCompiling: false,
   compileError: null,
 
   setTarget: (target) => {
     const config = { ...get().config, target };
+    set({ config, texSource: generateLatex(config) });
+  },
+
+  setOnePage: (onePage) => {
+    const config = { ...get().config, onePage };
     set({ config, texSource: generateLatex(config) });
   },
 
@@ -62,10 +70,13 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
         return;
       }
 
+      const pageCountHeader = res.headers.get("X-Page-Count");
+      const pageCount = pageCountHeader ? parseInt(pageCountHeader, 10) : null;
+
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const prevUrl = get().pdfUrl;
-      set({ pdfUrl: url, isCompiling: false, compileError: null });
+      set({ pdfUrl: url, pageCount, isCompiling: false, compileError: null });
       if (prevUrl) URL.revokeObjectURL(prevUrl);
     } catch (e) {
       if (e instanceof DOMException && e.name === "AbortError") return;

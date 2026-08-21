@@ -1,4 +1,16 @@
-export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{article}
+// `compact` tightens spacing for one-page mode: smaller item text and more
+// negative vspace between entries. `generateLatex` still checks the actual
+// rendered page count afterward and warns if it overflows regardless.
+export function buildPreamble(compact: boolean): string {
+  const itemFont = compact ? String.raw`\footnotesize` : String.raw`\small`;
+  const itemGap = compact ? "-4pt" : "-2pt";
+  const subheadingGap = compact ? "-9pt" : "-7pt";
+  const projectGap = compact ? "-9pt" : "-7pt";
+  const listEndGap = compact ? "-8pt" : "-5pt";
+  const sectionGap = compact ? "-6pt" : "-4pt";
+  const sectionRuleGap = compact ? "-7pt" : "-5pt";
+
+  return String.raw`\documentclass[letterpaper,11pt]{article}
 
 \usepackage{latexsym}
 \usepackage[empty]{fullpage}
@@ -43,37 +55,38 @@ export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{articl
 
 % Sections formatting
 \titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+  \vspace{${sectionGap}}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{${sectionRuleGap}}]
 
 %-------------------------
 % Custom commands
 \newcommand{\resumeItem}[1]{
-  \item\small{
-    {#1 \vspace{-2pt}}
+  \item${itemFont}{
+    {#1 \vspace{${itemGap}}}
   }
 }
 
 \newcommand{\resumeSubheading}[4]{
-  \vspace{-2pt}\item
+  \vspace{${itemGap}}\item
     \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
-    \end{tabular*}\vspace{-7pt}
+      \textit{${itemFont}#3} & \textit{${itemFont} #4} \\
+    \end{tabular*}\vspace{${subheadingGap}}
 }
 
 \newcommand{\resumeProjectHeading}[2]{
     \item
     \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \small#1 & #2 \\
-    \end{tabular*}\vspace{-7pt}
+      ${itemFont}#1 & #2 \\
+    \end{tabular*}\vspace{${projectGap}}
 }
 
 \newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
 \newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
 \newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{${listEndGap}}}
 `;
+}
 
 // The heading block through the tagline line — generateLatex() appends the
 // target-specific tagline and the closing \end{center} itself, since the

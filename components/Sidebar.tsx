@@ -44,12 +44,56 @@ function BlockGroup({
 export default function Sidebar() {
   const config = useResumeStore((s) => s.config);
   const setTarget = useResumeStore((s) => s.setTarget);
+  const setOnePage = useResumeStore((s) => s.setOnePage);
+  const pageCount = useResumeStore((s) => s.pageCount);
 
   return (
     <div className="h-full overflow-y-auto bg-neutral-900 p-4 text-neutral-100">
       <h2 className="mb-4 text-sm font-bold uppercase tracking-wide">
         Resume Toggler
       </h2>
+
+      <div className="mb-6">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+          Layout
+        </h3>
+        <div className="space-y-1.5">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200">
+            <input
+              type="radio"
+              name="layout"
+              checked={config.onePage}
+              onChange={() => setOnePage(true)}
+              className="h-3.5 w-3.5 accent-blue-500"
+            />
+            One Page (compact spacing)
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200">
+            <input
+              type="radio"
+              name="layout"
+              checked={!config.onePage}
+              onChange={() => setOnePage(false)}
+              className="h-3.5 w-3.5 accent-blue-500"
+            />
+            Master (all content, any length)
+          </label>
+        </div>
+        {pageCount != null && (
+          <p
+            className={`mt-2 text-xs ${
+              config.onePage && pageCount > 1
+                ? "text-amber-400"
+                : "text-neutral-500"
+            }`}
+          >
+            {pageCount} page{pageCount === 1 ? "" : "s"}
+            {config.onePage && pageCount > 1
+              ? " — cut some content to fit one page."
+              : ""}
+          </p>
+        )}
+      </div>
 
       <div className="mb-6">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">

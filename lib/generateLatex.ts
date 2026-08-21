@@ -1,4 +1,4 @@
-import { CONTACT_BLOCK_TOP, LATEX_PREAMBLE } from "./latexTemplate";
+import { buildPreamble, CONTACT_BLOCK_TOP } from "./latexTemplate";
 import {
   educationByTarget,
   experience,
@@ -12,12 +12,14 @@ export interface ResumeConfig {
   target: ResumeTarget;
   experienceIds: string[];
   projectIds: string[];
+  onePage: boolean;
 }
 
 export const defaultConfig: ResumeConfig = {
   target: "general",
   experienceIds: experience.map((b) => b.id),
   projectIds: projects.map((b) => b.id),
+  onePage: true,
 };
 
 function section(title: string, itemsLatex: string[]): string {
@@ -59,5 +61,5 @@ export function generateLatex(config: ResumeConfig): string {
 
   body.push(`\\section{Technical Skills}\n${skillsByTarget[config.target]}\n`);
 
-  return `${LATEX_PREAMBLE}\n\\begin{document}\n\n${body.join("\n")}\n\\end{document}\n`;
+  return `${buildPreamble(config.onePage)}\n\\begin{document}\n\n${body.join("\n")}\n\\end{document}\n`;
 }

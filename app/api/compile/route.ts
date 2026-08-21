@@ -3,6 +3,7 @@ import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { PDFDocument } from "pdf-lib";
 
 export const runtime = "nodejs";
 
@@ -47,9 +48,14 @@ export async function POST(request: Request) {
     });
 
     const pdf = await readFile(pdfPath);
+    const pageCount = (await PDFDocument.load(pdf)).getPageCount();
+
     return new NextResponse(new Uint8Array(pdf), {
       status: 200,
-      headers: { "Content-Type": "application/pdf" },
+      headers: {
+        "Content-Type": "application/pdf",
+        "X-Page-Count": String(pageCount),
+      },
     });
   } catch (error) {
     const isMissingBinary =
