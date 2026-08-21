@@ -2,6 +2,7 @@
 
 import { useResumeStore } from "@/store/useResumeStore";
 import { experience, projects, targets } from "@/data/resumeBlocks";
+import SavedConfigs from "@/components/SavedConfigs";
 
 function BlockGroup({
   title,
@@ -52,6 +53,8 @@ export default function Sidebar() {
       <h2 className="mb-4 text-sm font-bold uppercase tracking-wide">
         Resume Toggler
       </h2>
+
+      <SavedConfigs />
 
       <div className="mb-6">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
