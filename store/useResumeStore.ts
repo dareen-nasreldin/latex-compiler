@@ -14,6 +14,10 @@ interface ResumeState {
   compile: () => Promise<void>;
 }
 
+// Kept outside the store: an in-flight compile's controller, so a newer
+// compile() call can cancel a stale one instead of letting them race.
+let activeCompile: AbortController | null = null;
+
 export const useResumeStore = create<ResumeState>((set, get) => ({
   config: defaultConfig,
   texSource: generateLatex(defaultConfig),
@@ -38,6 +42,10 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
   setTexSource: (tex) => set({ texSource: tex }),
 
   compile: async () => {
+    activeCompile?.abort();
+    const controller = new AbortController();
+    activeCompile = controller;
+
     const { texSource } = get();
     set({ isCompiling: true, compileError: null });
     try {
@@ -45,6 +53,7 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tex: texSource }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -59,6 +68,7 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
       set({ pdfUrl: url, isCompiling: false, compileError: null });
       if (prevUrl) URL.revokeObjectURL(prevUrl);
     } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return;
       set({
         compileError: e instanceof Error ? e.message : "Unknown compile error.",
         isCompiling: false,

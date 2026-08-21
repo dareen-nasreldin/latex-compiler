@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       execFile(
         /* turbopackIgnore: true */ TECTONIC_BIN,
         ["resume.tex", "--outdir", "."],
-        { cwd: dir, timeout: COMPILE_TIMEOUT_MS },
+        { cwd: dir, timeout: COMPILE_TIMEOUT_MS, signal: request.signal },
         (error, stdout, stderr) => {
           if (error) {
             const log = [stdout, stderr].filter(Boolean).join("\n").trim();
