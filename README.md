@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume Builder — Personal LaTeX Editor (Mini-Overleaf)
 
-## Getting Started
+A private tool for managing a modular "Master Resume": toggle header/skills/
+project/experience/education blocks on or off per job target, tweak the
+generated `.tex` in a Monaco editor, and see a live compiled PDF.
 
-First, run the development server:
+## Local setup
+
+### 1. Install Tectonic
+
+The compile API route (`app/api/compile/route.ts`) shells out to the
+[Tectonic](https://tectonic-typesetting.github.io/) LaTeX engine, which is not
+bundled with this repo.
+
+**Windows, with an elevated terminal** (recommended if available):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+choco install tectonic
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Without admin rights** — download the official release zip and put
+`tectonic.exe` somewhere on your `PATH` (e.g. `%USERPROFILE%\bin`):
+https://github.com/tectonic-typesetting/tectonic/releases
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If `tectonic` isn't on `PATH`, set an absolute path instead via `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+TECTONIC_BIN=C:\Users\you\bin\tectonic.exe
+```
 
-## Learn More
+**Heads up on the first compile**: Tectonic downloads and locally caches the
+LaTeX packages/fonts it needs the first time each one is used (can take
+20–30s for the first few compiles as it pulls in `hyperref`, `fancyhdr`,
+`titlesec`, etc.). After that, compiles typically finish in a few seconds.
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Install dependencies and run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open http://localhost:3000. The sidebar toggles which blocks from
+`data/resumeBlocks.ts` are included; the editor lets you hand-edit the
+generated `.tex` directly (edits are debounced ~1s before auto-compiling).
+Compile errors show the Tectonic log instead of a blank preview.
 
-## Deploy on Vercel
+### 3. Add your real resume content
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`data/resumeBlocks.ts` ships with placeholder LaTeX blocks (marked `TODO`).
+Replace the `headers`, `skills`, `projects`, `experience`, and `education`
+entries with your actual content — the shared macros they rely on
+(`\resumeItem`, `\resumeSubheading`, `\resumeProjectHeading`, etc.) live in
+`lib/latexTemplate.ts`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Plain Vercel serverless functions can't run an arbitrary `tectonic` binary
+out of the box, so deploying the compile API needs one of:
+
+- **Vercel Sandbox** — provision a sandbox at request time, install/cache
+  Tectonic in it, and run the compile there. Not wired up yet.
+- **A small always-on service** (Railway, Render, Fly.io, or a Docker
+  container) with Tectonic preinstalled, running the same
+  `app/api/compile/route.ts` logic (or a thin equivalent) behind its own URL,
+  with the frontend still deployed to Vercel.
+
+Either path is future work — see the original project spec's "Cloud Sync"
+phase for the rest of the roadmap (AI-assisted tailoring, saved toggle
+loadouts, password-protected deploy).
