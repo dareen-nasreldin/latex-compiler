@@ -20,10 +20,7 @@ export default function SavedConfigs() {
   };
 
   return (
-    <div className="mb-6">
-      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-        Saved Configs
-      </h3>
+    <div>
       <div className="mb-2 flex gap-1.5">
         <input
           type="text"
@@ -31,32 +28,32 @@ export default function SavedConfigs() {
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSave()}
           placeholder="e.g. Google application"
-          className="min-w-0 flex-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-100 placeholder:text-neutral-500"
+          className="min-w-0 flex-1 rounded-sm border border-border bg-surface-raised px-2 py-1 text-[13px] text-text placeholder:text-text-muted"
         />
         <button
           onClick={handleSave}
           disabled={!name.trim()}
-          className="flex-shrink-0 rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white disabled:opacity-40"
+          className="flex-shrink-0 rounded-sm bg-accent px-2.5 py-1 text-[13px] font-medium text-bg disabled:opacity-30"
         >
           Save
         </button>
       </div>
 
       {names.length === 0 ? (
-        <p className="text-xs text-neutral-500">
-          No saved configs yet — save your current target/toggles to switch
-          between application loadouts later.
+        <p className="text-[11px] leading-snug text-text-muted">
+          Save your current target/toggles to switch between application
+          loadouts later.
         </p>
       ) : (
-        <ul className="space-y-1">
+        <ul className="space-y-0.5">
           {names.map((n) => (
             <li
               key={n}
-              className="flex items-center justify-between gap-1.5 text-sm text-neutral-200"
+              className="flex items-center justify-between gap-1.5 text-[13px] text-text"
             >
               <button
                 onClick={() => loadConfig(n)}
-                className="min-w-0 flex-1 truncate text-left hover:text-blue-400"
+                className="min-w-0 flex-1 truncate text-left hover:text-accent-strong"
                 title={`Load "${n}"`}
               >
                 {n}
@@ -65,7 +62,7 @@ export default function SavedConfigs() {
                 onClick={() => deleteConfig(n)}
                 aria-label={`Delete ${n}`}
                 title={`Delete "${n}"`}
-                className="flex-shrink-0 text-neutral-500 hover:text-red-400"
+                className="flex-shrink-0 text-text-muted hover:text-ink"
               >
                 ×
               </button>

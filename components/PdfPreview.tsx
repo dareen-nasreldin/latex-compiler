@@ -11,49 +11,49 @@ export default function PdfPreview() {
   const compileError = useResumeStore((s) => s.compileError);
   const [showLog, setShowLog] = useState(true);
 
-  const overflowWarning = onePage && pageCount != null && pageCount > 1;
+  const overflow = onePage && pageCount != null && pageCount > 1;
 
   return (
-    <div className="relative flex h-full w-full flex-col bg-neutral-800">
-      {isCompiling && (
-        <div className="absolute right-3 top-3 z-10 rounded bg-neutral-900/80 px-2 py-1 text-xs text-neutral-200">
-          Compiling…
-        </div>
-      )}
-
-      {overflowWarning && !compileError && (
-        <div className="flex-shrink-0 bg-amber-950 px-3 py-2 text-xs font-medium text-amber-200">
-          This resume is {pageCount} pages — trim some content to fit one
-          page, or switch to Master layout.
-        </div>
-      )}
-
+    <div className="flex h-full w-full flex-col bg-bg">
+      <div className="flex h-9 flex-shrink-0 items-center border-b border-border bg-surface px-3 font-mono text-[11px] text-text-muted">
+        resume.pdf
+      </div>
       {compileError ? (
-        <div className="flex h-full w-full flex-col overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <button
             onClick={() => setShowLog((v) => !v)}
-            className="flex-shrink-0 bg-red-950 px-3 py-2 text-left text-xs font-semibold text-red-200"
+            className="flex-shrink-0 border-b border-ink/40 bg-ink-soft px-3 py-2 text-left font-mono text-[11px] uppercase tracking-wider text-ink"
           >
             Compile failed — {showLog ? "hide" : "show"} log
           </button>
           {showLog && (
-            <pre className="flex-1 overflow-auto whitespace-pre-wrap break-words bg-neutral-950 p-3 text-xs text-red-300">
+            <pre className="flex-1 overflow-auto whitespace-pre-wrap break-words bg-surface p-3 font-mono text-[11px] leading-relaxed text-ink">
               {compileError}
             </pre>
           )}
           {pdfUrl && (
-            <iframe
-              title="Resume PDF preview (stale)"
-              src={pdfUrl}
-              className="flex-1 border-0 opacity-50"
-            />
+            <div className="flex-1 overflow-auto p-4 opacity-40">
+              <iframe
+                title="Resume PDF preview (stale)"
+                src={pdfUrl}
+                className="mx-auto h-full max-w-[680px] border-0 bg-paper"
+              />
+            </div>
           )}
         </div>
       ) : pdfUrl ? (
-        <iframe title="Resume PDF preview" src={pdfUrl} className="flex-1 w-full border-0" />
+        <div
+          className={`flex-1 overflow-auto p-4 ${overflow ? "border-t-2 border-ink" : ""}`}
+        >
+          <iframe
+            title="Resume PDF preview"
+            src={pdfUrl}
+            className="mx-auto h-full max-w-[680px] border-0 bg-paper shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+          />
+        </div>
       ) : (
-        <div className="flex h-full w-full items-center justify-center text-sm text-neutral-500">
-          {isCompiling ? "Compiling your first preview…" : "No preview yet."}
+        <div className="flex flex-1 items-center justify-center font-mono text-[11px] uppercase tracking-wider text-text-muted">
+          {isCompiling ? "Compiling…" : "No preview yet."}
         </div>
       )}
     </div>

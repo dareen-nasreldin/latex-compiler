@@ -1,16 +1,74 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { experience, projects, targets } from "@/data/resumeBlocks";
 import SavedConfigs from "@/components/SavedConfigs";
 
+function Section({
+  eyebrow,
+  children,
+  note,
+  noteTone = "muted",
+}: {
+  eyebrow: string;
+  children: ReactNode;
+  note?: string;
+  noteTone?: "muted" | "ink";
+}) {
+  return (
+    <div className="border-t border-border px-4 py-4 first:border-t-0">
+      <h3 className="mb-2.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
+        {eyebrow}
+      </h3>
+      {children}
+      {note && (
+        <p
+          className={`mt-2 text-[11px] leading-snug ${
+            noteTone === "ink" ? "text-ink" : "text-text-muted"
+          }`}
+        >
+          {note}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function OptionRow({
+  type,
+  name,
+  checked,
+  onChange,
+  label,
+}: {
+  type: "radio" | "checkbox";
+  name?: string;
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center gap-2 py-0.5 text-[13px] text-text">
+      <input
+        type={type}
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="h-3.5 w-3.5 flex-shrink-0"
+      />
+      {label}
+    </label>
+  );
+}
+
 function BlockGroup({
-  title,
+  eyebrow,
   blocks,
   selectedIds,
   category,
 }: {
-  title: string;
+  eyebrow: string;
   blocks: { id: string; label: string }[];
   selectedIds: string[];
   category: "experienceIds" | "projectIds";
@@ -18,27 +76,19 @@ function BlockGroup({
   const toggleBlock = useResumeStore((s) => s.toggleBlock);
 
   return (
-    <div className="mb-6">
-      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-        {title}
-      </h3>
-      <div className="space-y-1.5">
+    <Section eyebrow={eyebrow}>
+      <div className="space-y-0.5">
         {blocks.map((block) => (
-          <label
+          <OptionRow
             key={block.id}
-            className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200"
-          >
-            <input
-              type="checkbox"
-              checked={selectedIds.includes(block.id)}
-              onChange={() => toggleBlock(category, block.id)}
-              className="h-3.5 w-3.5 accent-blue-500"
-            />
-            {block.label}
-          </label>
+            type="checkbox"
+            checked={selectedIds.includes(block.id)}
+            onChange={() => toggleBlock(category, block.id)}
+            label={block.label}
+          />
         ))}
       </div>
-    </div>
+    </Section>
   );
 }
 
@@ -48,91 +98,67 @@ export default function Sidebar() {
   const setOnePage = useResumeStore((s) => s.setOnePage);
   const pageCount = useResumeStore((s) => s.pageCount);
 
+  const overflow = config.onePage && pageCount != null && pageCount > 1;
+
   return (
-    <div className="h-full overflow-y-auto bg-neutral-900 p-4 text-neutral-100">
-      <h2 className="mb-4 text-sm font-bold uppercase tracking-wide">
-        Resume Toggler
-      </h2>
+    <div className="h-full overflow-y-auto bg-surface text-text">
+      <Section eyebrow="Saved Configs">
+        <SavedConfigs />
+      </Section>
 
-      <SavedConfigs />
-
-      <div className="mb-6">
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-          Layout
-        </h3>
-        <div className="space-y-1.5">
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200">
-            <input
-              type="radio"
-              name="layout"
-              checked={config.onePage}
-              onChange={() => setOnePage(true)}
-              className="h-3.5 w-3.5 accent-blue-500"
-            />
-            One Page (compact spacing)
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200">
-            <input
-              type="radio"
-              name="layout"
-              checked={!config.onePage}
-              onChange={() => setOnePage(false)}
-              className="h-3.5 w-3.5 accent-blue-500"
-            />
-            Master (all content, any length)
-          </label>
+      <Section
+        eyebrow="Layout"
+        note={
+          overflow
+            ? "Over one page — uncheck a project or experience entry below to trim it down."
+            : undefined
+        }
+        noteTone="ink"
+      >
+        <div className="space-y-0.5">
+          <OptionRow
+            type="radio"
+            name="layout"
+            checked={config.onePage}
+            onChange={() => setOnePage(true)}
+            label="One page (compact)"
+          />
+          <OptionRow
+            type="radio"
+            name="layout"
+            checked={!config.onePage}
+            onChange={() => setOnePage(false)}
+            label="Master (any length)"
+          />
         </div>
-        {pageCount != null && (
-          <p
-            className={`mt-2 text-xs ${
-              config.onePage && pageCount > 1
-                ? "text-amber-400"
-                : "text-neutral-500"
-            }`}
-          >
-            {pageCount} page{pageCount === 1 ? "" : "s"}
-            {config.onePage && pageCount > 1
-              ? " — cut some content to fit one page."
-              : ""}
-          </p>
-        )}
-      </div>
+      </Section>
 
-      <div className="mb-6">
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-          Target
-        </h3>
-        <div className="space-y-1.5">
+      <Section
+        eyebrow="Target"
+        note="Education and Skills follow the target automatically."
+      >
+        <div className="space-y-0.5">
           {targets.map((t) => (
-            <label
+            <OptionRow
               key={t.id}
-              className="flex cursor-pointer items-center gap-2 text-sm text-neutral-200"
-            >
-              <input
-                type="radio"
-                name="target"
-                checked={config.target === t.id}
-                onChange={() => setTarget(t.id)}
-                className="h-3.5 w-3.5 accent-blue-500"
-              />
-              {t.label}
-            </label>
+              type="radio"
+              name="target"
+              checked={config.target === t.id}
+              onChange={() => setTarget(t.id)}
+              label={t.label}
+            />
           ))}
         </div>
-        <p className="mt-2 text-xs text-neutral-500">
-          Education and Skills sections follow the selected target
-          automatically.
-        </p>
-      </div>
+      </Section>
 
       <BlockGroup
-        title="Experience"
+        eyebrow="Experience"
         blocks={experience}
         selectedIds={config.experienceIds}
         category="experienceIds"
       />
       <BlockGroup
-        title="Projects"
+        eyebrow="Projects"
         blocks={projects}
         selectedIds={config.projectIds}
         category="projectIds"
