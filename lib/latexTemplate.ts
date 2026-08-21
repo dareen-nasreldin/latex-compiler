@@ -12,17 +12,28 @@ export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{articl
 \usepackage[english]{babel}
 \usepackage{tabularx}
 
+% glyphtounicode + \pdfgentounicode are omitted: they rely on the pdfTeX-only
+% \pdfglyphtounicode primitive, which doesn't exist in Tectonic's XeTeX-based
+% engine (compile fails with "Undefined control sequence" otherwise). XeTeX
+% already extracts correct Unicode text from copy-pasted PDFs on its own, so
+% this isn't a loss here.
+
+%----------FONT OPTIONS----------
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault]{FiraSans}
+
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot{}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
+% Adjust margins
 \addtolength{\oddsidemargin}{-0.5in}
 \addtolength{\evensidemargin}{-0.5in}
 \addtolength{\textwidth}{1in}
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.0in}
+\addtolength{\topmargin}{-0.65in}
+\addtolength{\textheight}{1.3in}
 
 \urlstyle{same}
 
@@ -30,12 +41,17 @@ export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{articl
 \raggedright
 \setlength{\tabcolsep}{0in}
 
+% Sections formatting
 \titleformat{\section}{
   \vspace{-4pt}\scshape\raggedright\large
 }{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
 
+%-------------------------
+% Custom commands
 \newcommand{\resumeItem}[1]{
-  \item\small{#1 \vspace{-2pt}}
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
 }
 
 \newcommand{\resumeSubheading}[4]{
@@ -53,21 +69,16 @@ export const LATEX_PREAMBLE = String.raw`\documentclass[letterpaper,11pt]{articl
     \end{tabular*}\vspace{-7pt}
 }
 
-\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
-
-\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
-
 \newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
 \newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
 \newcommand{\resumeItemListStart}{\begin{itemize}}
 \newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
 `;
 
-export const CONTACT_BLOCK = String.raw`\begin{center}
-    \textbf{\Huge \scshape Dareen M. Nasreldin} \\ \vspace{1pt}
-    % TODO: add your phone number and LinkedIn URL below.
-    \small 555-555-5555 $|$ \href{mailto:dareennasreldin@gmail.com}{dareennasreldin@gmail.com} $|$
-    \href{https://linkedin.com/in/yourname}{linkedin.com/in/yourname} $|$
-    \href{https://dareen-nasreldin.github.io}{dareen-nasreldin.github.io}
-\end{center}
-`;
+// The heading block through the tagline line — generateLatex() appends the
+// target-specific tagline and the closing \end{center} itself, since the
+// tagline changes per target but the rest of the heading is fixed.
+export const CONTACT_BLOCK_TOP = String.raw`\begin{center}
+    {\huge \scshape Dareen M. Nasreldin} \\ \vspace{2pt}
+    Aldie, VA $|$ (571) 282-9632 $|$ \href{mailto:dareennasreldin@gmail.com}{dareennasreldin@gmail.com} \\ \vspace{1pt}
+ \href{https://linkedin.com/in/dareen-nasreldin}{linkedin.com/in/dareen-nasreldin} $|$ \href{https://github.com/dareen-nasreldin}{github.com/dareen-nasreldin} $|$ \href{https://dareen-nasreldin.github.io}{Portfolio} \\ \vspace{2pt}`;

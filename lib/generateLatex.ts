@@ -1,4 +1,4 @@
-import { CONTACT_BLOCK, LATEX_PREAMBLE } from "./latexTemplate";
+import { CONTACT_BLOCK_TOP, LATEX_PREAMBLE } from "./latexTemplate";
 import {
   educationByTarget,
   experience,
@@ -33,9 +33,9 @@ export function generateLatex(config: ResumeConfig): string {
     config.projectIds.includes(b.id),
   );
 
-  const body: string[] = [CONTACT_BLOCK];
-
-  body.push(`\\begin{center}\n    \\small ${headers[config.target]}\n\\end{center}\n`);
+  const body: string[] = [
+    `${CONTACT_BLOCK_TOP}\n    ${headers[config.target]}\n\\end{center}\n`,
+  ];
 
   body.push(`\\section{Education}\n${educationByTarget[config.target]}\n`);
 
@@ -57,7 +57,7 @@ export function generateLatex(config: ResumeConfig): string {
     );
   }
 
-  body.push(`\\section{Skills}\n${skillsByTarget[config.target]}\n`);
+  body.push(`\\section{Technical Skills}\n${skillsByTarget[config.target]}\n`);
 
   return `${LATEX_PREAMBLE}\n\\begin{document}\n\n${body.join("\n")}\n\\end{document}\n`;
 }
