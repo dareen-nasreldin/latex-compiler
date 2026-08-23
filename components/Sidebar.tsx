@@ -17,8 +17,8 @@ function Section({
   noteTone?: "muted" | "ink";
 }) {
   return (
-    <div className="border-t border-border px-4 py-4 first:border-t-0">
-      <h3 className="mb-2.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
+    <div className="border-t border-border px-4 py-5 first:border-t-0">
+      <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-wider text-text-muted">
         {eyebrow}
       </h3>
       {children}
@@ -49,7 +49,7 @@ function OptionRow({
   label: string;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 py-0.5 text-[13px] text-text">
+    <label className="-mx-2 flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-[13px] text-text transition-colors hover:bg-surface-raised">
       <input
         type={type}
         name={name}

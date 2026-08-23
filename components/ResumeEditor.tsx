@@ -15,6 +15,7 @@ const handleBeforeMount: BeforeMount = (monaco) => {
       "editor.background": "#1f2024",
       "editor.lineHighlightBackground": "#26272c",
       "editorLineNumber.foreground": "#5b5d63",
+      "editorGutter.background": "#242529",
     },
   });
 };

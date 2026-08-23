@@ -18,6 +18,14 @@ export default function PdfPreview() {
       <div className="flex h-9 flex-shrink-0 items-center border-b border-border bg-surface px-3 font-mono text-[11px] text-text-muted">
         resume.pdf
       </div>
+      {isCompiling && (
+        <div className="h-0.5 flex-shrink-0 overflow-hidden bg-surface">
+          <div
+            className="h-full w-1/3 bg-accent"
+            style={{ animation: "compile-progress 1.1s ease-in-out infinite" }}
+          />
+        </div>
+      )}
       {compileError ? (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <button
