@@ -26,13 +26,18 @@ export default function ResumeEditor() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    console.log("[ResumeEditor] mount effect firing initial compile()");
     compile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
+    console.log("[ResumeEditor] texSource changed, scheduling debounced compile()", {
+      length: texSource.length,
+    });
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
+      console.log("[ResumeEditor] debounce elapsed, calling compile()");
       compile();
     }, DEBOUNCE_MS);
     return () => {
@@ -52,8 +57,14 @@ export default function ResumeEditor() {
           language="latex"
           theme="desk-dark"
           beforeMount={handleBeforeMount}
+          onMount={() => console.log("[ResumeEditor] Monaco onMount fired — editor bundle loaded")}
           value={texSource}
           onChange={(value) => setTexSource(value ?? "")}
+          loading={
+            <span className="font-mono text-[11px] text-text-muted">
+              Loading editor…
+            </span>
+          }
           options={{
             minimap: { enabled: false },
             fontSize: 13,

@@ -58,11 +58,13 @@ export const useResumeStore = create<ResumeState>()(
       setTexSource: (tex) => set({ texSource: tex }),
 
       compile: async () => {
+        console.log("[compile] called, aborting any in-flight request");
         activeCompile?.abort();
         const controller = new AbortController();
         activeCompile = controller;
 
         const { texSource } = get();
+        console.log("[compile] starting fetch, texSource length:", texSource.length);
         set({ isCompiling: true, compileError: null });
         try {
           const res = await fetch("/api/compile", {
@@ -71,9 +73,11 @@ export const useResumeStore = create<ResumeState>()(
             body: JSON.stringify({ tex: texSource }),
             signal: controller.signal,
           });
+          console.log("[compile] fetch resolved, status:", res.status);
 
           if (!res.ok) {
             const err = await res.json().catch(() => ({ log: res.statusText }));
+            console.error("[compile] server returned an error:", err.log);
             set({ compileError: err.log ?? "Compilation failed.", isCompiling: false });
             return;
           }
@@ -82,6 +86,7 @@ export const useResumeStore = create<ResumeState>()(
           const pageCount = pageCountHeader ? parseInt(pageCountHeader, 10) : null;
 
           const blob = await res.blob();
+          console.log("[compile] got PDF blob, bytes:", blob.size, "pages:", pageCount);
           // #view=FitH pins a consistent fit-width zoom on every reload —
           // without it, Chrome's built-in PDF viewer resets to whatever its
           // own default is each time the blob URL changes (i.e. every
@@ -91,7 +96,11 @@ export const useResumeStore = create<ResumeState>()(
           set({ pdfUrl: url, pageCount, isCompiling: false, compileError: null });
           if (prevUrl) URL.revokeObjectURL(prevUrl.split("#")[0]);
         } catch (e) {
-          if (e instanceof DOMException && e.name === "AbortError") return;
+          if (e instanceof DOMException && e.name === "AbortError") {
+            console.log("[compile] aborted (superseded by a newer compile() call)");
+            return;
+          }
+          console.error("[compile] threw:", e);
           set({
             compileError: e instanceof Error ? e.message : "Unknown compile error.",
             isCompiling: false,
